@@ -1,54 +1,69 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #121212; /* Dark background */
+    color: #E0E0E0; /* Light text for contrast */
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
 
-    body {
-        font-family: Arial, sans-serif;
-        padding: 20px;
-        max-width: 800px; /* Keeps content from stretching too wide */
-        margin: 0 auto; /* Centers the content */
-    }
-    h1 {
-        color: #333; /* Darker gray for contrast */
-        text-align: center; /* Centers the title */
-    }
-    form {
-        background: #f9f9f9; /* Light gray background for the form */
-        padding: 20px;
-        border-radius: 8px; /* Rounded corners */
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    }
-    label {
-        font-weight: bold;
-        margin-right: 10px;
-    }
-    select {
-        padding: 8px;
-        font-size: 16px;
-        border-radius: 4px;
-    }
-    button {
-        background-color: #007BFF; /* Blue to make it pop */
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 16px;
-    }
-    button:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-    button:hover:not(:disabled) {
-        background-color: #0056b3; /* Darker blue on hover */
-    }
-    #promptText, #userResponse, #feedback {
-        display: block;
-        margin: 10px 0;
-        font-size: 16px;
-    }
-    #feedback {
-        white-space: pre-line;
-        color: #555; /* Slightly muted for feedback */
-    }
-    p {
-        margin: 15px 0; /* Consistent spacing */
-    }
+h1 {
+    color: #F5F5F5; /* Brighter for visibility */
+    text-align: center;
+}
+
+form {
+    background: #1e1e1e; /* Dark gray background */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1); /* Subtle white shadow */
+}
+
+label {
+    font-weight: bold;
+    margin-right: 10px;
+    color: #E0E0E0;
+}
+
+select {
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 4px;
+    background: #333; /* Darker select background */
+    color: #E0E0E0;
+    border: 1px solid #555;
+}
+
+button {
+    background-color: #007BFF; /* Keep the vibrant blue */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover:not(:disabled) {
+    background-color: #0056b3;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#promptText, #userResponse, #feedback {
+    display: block;
+    margin: 10px 0;
+    font-size: 16px;
+}
+
+#feedback {
+    white-space: pre-line;
+    color: #BBBBBB; /* Lighter gray for contrast */
+}
+
+p {
+    margin: 15px 0;
+}
