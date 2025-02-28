@@ -1,43 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <title>LinguaQuest</title>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        button:disabled { opacity: 0.5; }
-        #feedback { white-space: pre-line; }
-    </style>
+
+    <!-- Link to external CSS file -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+
 </head>
+
 <body>
-    <h1>Welcome to the LinguaQuest Assessment App</h1>
-    
-    <p>Choose a language and say the phrase shown:</p>
-    
-    <form id="languageForm">
-        <label for="language">Select Language:</label>
-        <select id="language" name="language">
-            <option value="" disabled selected>Select a language</option>
-            <option value="English">English</option>
-            <option value="Russian">Russian</option>
-            <option value="Spanish">Spanish</option>
-        </select>
-        
-        <p><strong>Phrase to Say:</strong> <span id="promptText" aria-live="polite">Select a language first</span></p>
+    <header>
+        <h1>Welcome to the LinguaQuest Assessment App</h1>
+    </header>
 
-        <button type="button" id="startRecording">🎤 Start Speaking</button>
+    <main>
+        <p>Choose a language and say the phrase shown:</p>
 
-        <p><strong>Your Response:</strong> <span id="userResponse">Waiting...</span></p>
+        <form id="languageForm" action="#" method="POST">
+            <!-- Language Selection -->
+            <div class="form-group">
+                <label for="language">Select Language:</label>
+                <select id="language" name="language" aria-required="true">
+                    <option value="" disabled selected>Select a language</option>
+                    <option value="English">English</option>
+                    <option value="Russian">Russian</option>
+                    <option value="Spanish">Spanish</option>
+                </select>
+            </div>
 
-        <p><strong>Feedback:</strong> <span id="feedback">Awaiting input...</span></p>
-    </form>
+            <!-- Prompt Text -->
+            <div class="form-group">
+                <p><strong>Phrase to Say:</strong> <span id="promptText" aria-live="polite">Select a language first</span></p>
+            </div>
 
-    <noscript>
-        <p>Please enable JavaScript to use the Language Assessment App.</p>
-    </noscript>
+            <!-- Get Random Prompt Button -->
+            <div class="form-group">
+                <button type="button" id="generatePrompt" disabled>Get Random Prompt</button>
+            </div>
 
+            <!-- Start Recording Button -->
+            <div class="form-group">
+                <button type="button" id="startRecording" disabled>🎤 Start Speaking</button>
+            </div>
+
+            <!-- User Response Display -->
+            <div class="form-group">
+                <p><strong>Your Response:</strong> <textarea id="responseText" placeholder="Your response here..." rows="5" cols="40"></textarea></p>
+            </div>
+
+            <!-- Download Transcript Button -->
+            <div class="form-group">
+                <button type="button" id="downloadTranscript" disabled>Download Transcript</button>
+            </div>
+        </form>
+
+        <!-- Feedback Display -->
+        <div class="form-group">
+            <p id="feedback"></p> <!-- Add this line for feedback -->
+        </div>
+
+
+        <!-- NoScript Message -->
+        <noscript>
+            <p>Please enable JavaScript to use the Language Assessment App.</p>
+        </noscript>
+    </main>
+
+    <!-- Link to JavaScript file -->
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
+
 </html>
