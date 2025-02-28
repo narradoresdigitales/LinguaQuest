@@ -3,13 +3,35 @@ body {
     background-color: #121212; /* Dark background */
     color: #E0E0E0; /* Light text for contrast */
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     max-width: 800px;
+    height: 100vh;
     margin: 0 auto;
 }
 
 h1 {
     color: #F5F5F5; /* Brighter for visibility */
     text-align: center;
+    margin-bottom: 20px; /* Adds spacing after the header */
+}
+
+h2 {
+    margin-top: 35px;
+    margin-bottom: 0px;
+    color: #007BFF;
+}
+.speaking {
+    
+    font-size:large;
+    margin-bottom: 25px;
+
+}
+.activity {
+    text-align: center;
+    font-style: italic;
 }
 
 form {
@@ -32,6 +54,13 @@ select {
     background: #333; /* Darker select background */
     color: #E0E0E0;
     border: 1px solid #555;
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition for color change */
+}
+
+select:focus {
+    outline: none;
+    border: 1px solid #007BFF; /* Highlight with the same color as the button */
+    background-color: #444; /* Slightly lighter background */
 }
 
 button {
@@ -40,8 +69,10 @@ button {
     padding: 10px 20px;
     border: none;
     border-radius: 4px;
+    margin-bottom: 15px;
     cursor: pointer;
     font-size: 16px;
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effect */
 }
 
 button:hover:not(:disabled) {
@@ -67,6 +98,7 @@ button:disabled {
 p {
     margin: 15px 0;
 }
+
 .recording {
     background-color: red; /* Change button color during recording */
     color: white;
@@ -77,4 +109,31 @@ p {
     0% { transform: scale(1); }
     50% { transform: scale(1.1); }
     100% { transform: scale(1); }
+}
+
+a {
+    color: #1E90FF; /* Bright blue for links */
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 10px; /* Reduce padding on small screens */
+    }
+
+    h1 {
+        font-size: 24px; /* Smaller heading */
+    }
+
+    form {
+        padding: 15px; /* Slightly reduce padding for smaller screens */
+    }
+
+    button {
+        width: 100%; /* Full-width button on small screens */
+    }
 }
