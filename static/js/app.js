@@ -1,54 +1,50 @@
 document.addEventListener("DOMContentLoaded", function () {
+    const startRecordingBtn = document.getElementById("startRecording");
+    const userResponse = document.getElementById("responseText");
+    const feedback = document.getElementById("feedback");
     const languageSelect = document.getElementById("language");
     const promptText = document.getElementById("promptText");
-    const startRecordingBtn = document.getElementById("startRecording");
-    const userResponse = document.getElementById("userResponse");
-    const feedback = document.getElementById("feedback");
+    const generatePromptBtn = document.getElementById("generatePrompt");
+    const downloadTranscriptBtn = document.getElementById("downloadTranscript");
 
-    const langCodes = { "English": "en-US", "Russian": "ru-RU", "Spanish": "es-ES" };
-    let currentPrompt = "";  // Store the prompt fetched from backend
-
-    languageSelect.addEventListener("change", () => {
-        const langChoice = languageSelect.value;
-        if (!langChoice) {
-            promptText.textContent = "Select a language first";
-            currentPrompt = "";
-            return;
-        }
-
-        // Fetch prompt from backend
-        fetch(`/prompt?language=${langChoice}`)
-            .then(response => {
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                return response.json();
-            })
-            .then(data => {
-                if (data.error) {
-                    promptText.textContent = `Error: ${data.error}`;
-                    currentPrompt = "";
-                } else {
-                    promptText.textContent = data.prompt;
-                    currentPrompt = data.prompt;  // Store for later use
-                }
-            })
-            .catch(error => {
-                promptText.textContent = "Error fetching prompt";
-                currentPrompt = "";
-                console.error("Fetch error:", error);
-            });
-    });
-
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-        alert("Your browser does not support speech recognition. Please use Chrome.");
-        startRecordingBtn.disabled = true;
-        startRecordingBtn.textContent = "🎤 Not Supported";
+    // Ensure required elements are present
+    if (!startRecordingBtn || !userResponse || !feedback || !languageSelect || !promptText || !generatePromptBtn || !downloadTranscriptBtn) {
+        console.error("Required elements are missing from the DOM.");
         return;
     }
 
-    const recognition = new SpeechRecognition();
-    recognition.interimResults = false;
+    // Language codes mapping
+    const langCodes = {
+        English: "en-US",
+        Russian: "ru-RU",
+        Spanish: "es-ES"
+    };
 
+    let currentPrompt = "";
+    let transcript = ""; // Variable to store the transcript text
+
+    // Enable "Generate Prompt" button when a language is selected
+    languageSelect.addEventListener("change", () => {
+        if (languageSelect.value) {
+            generatePromptBtn.disabled = false;
+        } else {
+            generatePromptBtn.disabled = true;
+        }
+    });
+
+    // Handle the "Generate Prompt" button click
+    generatePromptBtn.addEventListener("click", () => {
+        const langChoice = languageSelect.value;
+        if (!langChoice) {
+            alert("Please select a language first.");
+            return;
+        }
+
+        // Fetch a random prompt based on the selected language
+        fetchPrompt(langChoice);
+    });
+
+    // Handle the "Start Recording" button click
     startRecordingBtn.addEventListener("click", () => {
         const langChoice = languageSelect.value;
         if (!langChoice || !currentPrompt) {
@@ -56,48 +52,82 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
+        console.log("Start recording button clicked. Language:", langChoice);
+
+        // Set the language for speech recognition
         recognition.lang = langCodes[langChoice];
-        startRecordingBtn.textContent = "🎤 Recording...";
+
+        // Disable the start button, update its text, and update the feedback area
         startRecordingBtn.disabled = true;
+        startRecordingBtn.textContent = "🎤 Recording...";
         userResponse.textContent = "Listening...";
         feedback.textContent = "Processing...";
+        startRecordingBtn.classList.add("recording");
+
+        // Start speech recognition
         recognition.start();
     });
 
-    recognition.addEventListener("result", (event) => {
-        const transcript = event.results[0][0].transcript;
-        userResponse.textContent = transcript;
-        sendToBackend(transcript, languageSelect.value, currentPrompt);
-    });
+    // Function to fetch and display a random prompt based on the selected language
+    function fetchPrompt(language) {
+        const prompts = {
+            English: ["Describe your daily routine.", "Tell me about a place you've visited."],
+            Russian: ["Опишите свою повседневную рутину.", "Расскажите мне о месте, которое вы посетили."],
+            Spanish: ["Describe tu rutina diaria.", "Cuéntame sobre un lugar que visitaste."]
+        };
 
-    recognition.addEventListener("error", (event) => {
-        userResponse.textContent = "Error: Unable to recognize speech.";
-        feedback.textContent = "Try again.";
-    });
+        // Randomly select a prompt
+        currentPrompt = prompts[language][Math.floor(Math.random() * prompts[language].length)];
+        promptText.textContent = currentPrompt;
 
-    recognition.addEventListener("end", () => {
-        startRecordingBtn.textContent = "🎤 Start Speaking";
+        // Enable the "Start Speaking" button
+        generatePromptBtn.disabled = true;
         startRecordingBtn.disabled = false;
-    });
-
-    function sendToBackend(text, langChoice, expectedPrompt) {
-        fetch("/assess", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ user_input: text, lang_choice: langChoice, expected_prompt: expectedPrompt })
-        })
-        .then(response => {
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            return response.json();
-        })
-        .then(data => {
-            feedback.textContent = data.error 
-                ? `Error: ${data.error}` 
-                : `${data.ilr_level}\nScore: ${data.similarity_score}\nExpected: "${data.expected_prompt}"`;
-        })
-        .catch(error => {
-            feedback.textContent = "Error: Unable to connect to server.";
-            console.error("Fetch error:", error);
-        });
     }
+
+    // Speech recognition setup
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+
+    // Handle the result of speech recognition
+    recognition.onresult = (event) => {
+        const speechResult = event.results[0][0].transcript;
+        userResponse.value = speechResult;  // Display the recognized text in the response textarea
+        transcript = speechResult;  // Store the transcript text
+        feedback.textContent = "Processing complete";  // Update feedback text
+
+        // Enable the "Download Transcript" button after recording is done
+        downloadTranscriptBtn.disabled = false;
+    };
+
+    // Handle any errors during speech recognition
+    recognition.onerror = (event) => {
+        feedback.textContent = `Error occurred: ${event.error}`;
+    };
+
+    // Reset UI when recognition ends
+    recognition.onend = () => {
+        startRecordingBtn.disabled = false;
+        startRecordingBtn.textContent = "🎤 Start Speaking";
+        userResponse.textContent = "Response recorded.";
+        feedback.textContent = "Recognition ended.";
+    };
+
+    // Handle the "Download Transcript" button click
+    downloadTranscriptBtn.addEventListener("click", () => {
+        if (!transcript) {
+            alert("No transcript available to download.");
+            return;
+        }
+
+        // Create a Blob containing the transcript
+        const blob = new Blob([transcript], { type: "text/plain" });
+
+        // Create a temporary link element to trigger the download
+        const downloadLink = document.createElement("a");
+        downloadLink.href = URL.createObjectURL(blob);
+        downloadLink.download = "transcript.txt";  // Set the download file name
+
+        // Programmatically click the link to trigger the download
+        downloadLink.click();
+    });
 });
