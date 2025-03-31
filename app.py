@@ -23,10 +23,33 @@ def home():
 
 # Store prompts globally so they're consistent across requests
 prompts = {
-    "English": ["Describe your daily routine.", "Tell me about a place you visited."],
-    "Russian": ["Опишите ваш обычный день.", "Расскажите о месте, которое вы посетили."],
-    "Spanish": ["Describe tu rutina diaria.", "Cuéntame sobre un lugar que visitaste."]
+    "English": [
+        "Describe your daily routine.", 
+        "Tell me about a place you've visited.",
+        "What is your favorite book and why?", 
+        "Describe your dream vacation.", 
+        "What is your favorite hobby?",
+        "How do you stay healthy?"
+    ],
+    "Russian": [
+        "Опишите свою повседневную рутину.", 
+        "Расскажите мне о месте, которое вы посетили.", 
+        "Какой ваш любимый фильм?", 
+        "Опишите ваш родной город.",
+        "Что вам нравится делать в свободное время?", 
+        "Какое ваше любимое время года?"
+    ],
+    "Spanish": [
+        "Describe tu rutina diaria.", 
+        "Cuéntame sobre un lugar que visitaste.", 
+        "¿Cuál es tu película favorita y por qué?", 
+        "Describe tu lugar de vacaciones ideal.",
+        "¿Qué te gusta hacer en tu tiempo libre?", 
+        "¿Cómo te mantienes en forma?"
+    ]
 }
+
+
 
 # Function to transcribe audio using Whisper
 def transcribe_audio(audio_file):
