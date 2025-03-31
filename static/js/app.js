@@ -7,6 +7,17 @@ document.addEventListener("DOMContentLoaded", function () {
     const generatePromptBtn = document.getElementById("generatePrompt");
     const downloadTranscriptBtn = document.getElementById("downloadTranscript");
 
+
+
+
+    // Create Stop Recording Button
+    const stopRecordingBtn = document.createElement("button");
+    stopRecordingBtn.textContent = "🛑 Stop Recording";
+    stopRecordingBtn.id = "stopRecording";
+    stopRecordingBtn.style.display = "none"; // Initially hidden
+    stopRecordingBtn.disabled = true;
+    startRecordingBtn.parentNode.insertBefore(stopRecordingBtn, startRecordingBtn.nextSibling);
+
     // Ensure required elements are present
     if (!startRecordingBtn || !userResponse || !feedback || !languageSelect || !promptText || !generatePromptBtn || !downloadTranscriptBtn) {
         console.error("Required elements are missing from the DOM.");
@@ -25,11 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Enable "Generate Prompt" button when a language is selected
     languageSelect.addEventListener("change", () => {
-        if (languageSelect.value) {
-            generatePromptBtn.disabled = false;
-        } else {
-            generatePromptBtn.disabled = true;
-        }
+        generatePromptBtn.disabled = !languageSelect.value;
     });
 
     // Handle the "Generate Prompt" button click
@@ -57,8 +64,10 @@ document.addEventListener("DOMContentLoaded", function () {
         // Set the language for speech recognition
         recognition.lang = langCodes[langChoice];
 
-        // Disable the start button, update its text, and update the feedback area
+        // Disable start button, update text, enable stop button
         startRecordingBtn.disabled = true;
+        stopRecordingBtn.disabled = false;
+        stopRecordingBtn.style.display = "inline-block"; // Show stop button
         startRecordingBtn.textContent = "🎤 Recording...";
         userResponse.textContent = "Listening...";
         feedback.textContent = "Processing...";
@@ -67,6 +76,14 @@ document.addEventListener("DOMContentLoaded", function () {
         // Start speech recognition
         recognition.start();
     });
+
+    // Handle the "Stop Recording" button click
+    stopRecordingBtn.addEventListener("click", () => {
+        console.log("Stop recording button clicked.");
+        recognition.stop(); // Stop speech recognition
+        resetUI();
+    });
+    
 
     // Function to fetch and display a random prompt based on the selected language
     function fetchPrompt(language) {
@@ -85,32 +102,58 @@ document.addEventListener("DOMContentLoaded", function () {
         startRecordingBtn.disabled = false;
     }
 
+    function resetUI() {
+        startRecordingBtn.disabled = false;
+        stopRecordingBtn.disabled = true;
+        stopRecordingBtn.style.display = "none"; // Hide stop button
+        startRecordingBtn.textContent = "🎤 Start Speaking";
+        feedback.textContent = "Recording stopped.";
+    }
+
+
     // Speech recognition setup
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
 
     // Handle the result of speech recognition
-    recognition.onresult = (event) => {
-        const speechResult = event.results[0][0].transcript;
-        userResponse.value = speechResult;  // Display the recognized text in the response textarea
-        transcript = speechResult;  // Store the transcript text
-        feedback.textContent = "Processing complete";  // Update feedback text
+    recognition.onresult = function(event) {
+        const newTranscript = event.results[0][0].transcript;
+        const responseTextArea = document.getElementById("responseText");
+    
+        // Append new transcript instead of overwriting
+        responseTextArea.value += (responseTextArea.value ? "\n" : "") + newTranscript;
+    
+        // Update the transcript variable with the full text
+        transcript = responseTextArea.value;
 
-        // Enable the "Download Transcript" button after recording is done
+         // Enable the download button once there's text
+        if (transcript.trim() !== "") {
         downloadTranscriptBtn.disabled = false;
+    }
     };
+    
+    
 
     // Handle any errors during speech recognition
     recognition.onerror = (event) => {
         feedback.textContent = `Error occurred: ${event.error}`;
     };
 
+
+   
+    
+
     // Reset UI when recognition ends
     recognition.onend = () => {
-        startRecordingBtn.disabled = false;
-        startRecordingBtn.textContent = "🎤 Start Speaking";
-        userResponse.textContent = "Response recorded.";
-        feedback.textContent = "Recognition ended.";
+        if (!stopRecordingBtn.disabled) {
+            console.log("Recognition stopped by system, but user has not clicked stop.");
+            return; // Do nothing if user hasn't clicked stop
+        }
+        
+        console.log("Recognition ended by user.");
+        resetUI();
     };
+    
+
 
     // Handle the "Download Transcript" button click
     downloadTranscriptBtn.addEventListener("click", () => {
