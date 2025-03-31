@@ -28,7 +28,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const langCodes = {
         English: "en-US",
         Russian: "ru-RU",
-        Spanish: "es-ES"
+        Spanish: "es-ES",
+        Chinese: "zh-CN",
+        Portuguese: "pt-PT",
+        Arabic: "ar-SA"
     };
 
     let currentPrompt = "";
@@ -111,7 +114,42 @@ document.addEventListener("DOMContentLoaded", function () {
                 "Describe tu lugar de vacaciones ideal.",
                 "¿Qué te gusta hacer en tu tiempo libre?", 
                 "¿Cómo te mantienes en forma?"
+            ], 
+
+            "Chinese": [
+                "描述你的日常生活。",
+                "告诉我一个你去过的地方。",
+                "你最喜欢的书是什么？为什么？",
+                "描述一下你的梦想假期。",
+                "你最喜欢的爱好是什么？",
+                "你是如何保持健康的？",
+                "你最喜欢的食物是什么？",
+                "谈谈你的家乡。",
+                "你觉得学习中文最有挑战的是什么？"
+            ],
+            "Portuguese": [
+                "Descreva sua rotina diária.",
+                "Fale sobre um lugar que você visitou.",
+                "Qual é o seu livro favorito e por quê?", 
+                "Descreva suas férias dos sonhos.",
+                "Qual é o seu hobby favorito?", 
+                "Como você se mantém saudável?",
+                "Qual é o seu prato favorito?",
+                "Fale sobre sua cidade natal.",
+                "O que você mais gosta de fazer no tempo livre?"
+            ],
+            "Arabic": [
+                "وصف روتينك اليومي.",
+                "حدثني عن مكان زرته.",
+                "ما هو كتابك المفضل ولماذا؟",
+                "وصف عطلتك المثالية.",
+                "ما هو هواك المفضل؟",
+                "كيف تحافظ على صحتك؟",
+                "ما هو طعامك المفضل؟",
+                "حدثني عن مدينتك.",
+                "ما هو التحدي الأكبر الذي واجهته أثناء تعلم اللغة العربية؟"
             ]
+
         }
 
         // Randomly select a prompt
