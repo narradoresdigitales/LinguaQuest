@@ -60,9 +60,9 @@ def get_prompt():
 @app.route('/assess', methods=['POST'])
 def assess():
     try:
-        data = request.json  # Retrieve JSON data from the frontend
-        lang_choice = data.get("lang_choice", None)
-        audio_file = request.files.get("audio")
+        # Retrieve form data for lang_choice and the uploaded file
+        lang_choice = request.form.get("lang_choice")  # For text data
+        audio_file = request.files.get("audio")  # For file upload
 
         # Log incoming data for debugging
         logging.debug(f"Received data: lang_choice={lang_choice}")
@@ -95,6 +95,9 @@ def assess():
     except Exception as e:
         logging.error(f"Server error: {str(e)}")
         return jsonify({"error": f"Server error: {str(e)}"}), 500
+
+    
+    
 
 if __name__ == '__main__':
     app.run(debug=True)
